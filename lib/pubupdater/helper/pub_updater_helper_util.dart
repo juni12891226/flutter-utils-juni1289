@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:pub_updater/pub_updater.dart';
 import 'package:flutter_utils_juni1289/pubupdater/model/pub_updater_helper_model.dart';
+import 'package:pub_updater/pub_updater.dart';
 
 class PubUpdaterHelperUtil {
   /// private constructor

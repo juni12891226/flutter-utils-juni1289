@@ -1,5 +1,5 @@
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:flutter_utils_juni1289/apputil/enums_util_helper.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class NumberFieldInputFormatterHelperUtil {
   /// private constructor

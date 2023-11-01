@@ -9,16 +9,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_utils_juni1289/apputil/enums_util_helper.dart';
-import 'package:flutter_utils_juni1289/exceptions/base64_format_exception.dart';
-import 'package:oktoast/oktoast.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 import 'package:flutter_utils_juni1289/datetime/date_time_helper_util.dart';
 import 'package:flutter_utils_juni1289/exceptions/app_store_launch_url_exception.dart';
 import 'package:flutter_utils_juni1289/exceptions/base64_format_exception.dart';
 import 'package:flutter_utils_juni1289/exceptions/file_name_extenstion_exception.dart';
 import 'package:flutter_utils_juni1289/formatters/field_length_formatter.dart';
 import 'package:flutter_utils_juni1289/widgets/misc/empty_container_helper_widget.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppHelperUtil {
@@ -292,10 +290,7 @@ class AppHelperUtil {
   ///[listToReplace] can be null is a list of strings that needs to be replaced in given string by replacementString
   ///[trimLeft] is optional to trim from start
   ///[trimRight] is optional to trim from end
-  String replacer({
-    bool? trimLeft,
-    bool? trimRight,
-    required String givenString, required String replacementString, String? toReplace, List<String?>? listToReplace}) {
+  String replacer({bool? trimLeft, bool? trimRight, required String givenString, required String replacementString, String? toReplace, List<String?>? listToReplace}) {
     //process toReplace string
     String processedString = givenString.isNotEmpty ? givenString : "";
     if (toReplace != null && toReplace.isNotEmpty) {
@@ -311,12 +306,12 @@ class AppHelperUtil {
       }
     }
 
-    if(trimLeft??false){
-      processedString=processedString.trimLeft();
+    if (trimLeft ?? false) {
+      processedString = processedString.trimLeft();
     }
 
-    if(trimRight??false){
-      processedString=processedString.trimRight();
+    if (trimRight ?? false) {
+      processedString = processedString.trimRight();
     }
     return processedString;
   }

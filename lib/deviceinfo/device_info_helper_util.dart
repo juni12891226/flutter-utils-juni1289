@@ -1,11 +1,11 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_utils_juni1289/apputil/app_util_helper.dart';
 import 'package:flutter_utils_juni1289/apputil/enums_util_helper.dart';
 import 'package:flutter_utils_juni1289/changecase/string_change_case_helper_util.dart';
 import 'package:flutter_utils_juni1289/exceptions/device_info_helper_util_exception.dart';
 import 'package:flutter_utils_juni1289/exceptions/flutter_utils_platform_exception.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class DeviceInfoHelperUtil {
   /// private constructor

@@ -1,11 +1,11 @@
 import 'dart:math';
 
-import 'package:location/location.dart';
 import 'package:flutter_utils_juni1289/apputil/app_util_helper.dart';
 import 'package:flutter_utils_juni1289/apputil/enums_util_helper.dart';
 import 'package:flutter_utils_juni1289/location/model/location_data_model.dart';
 import 'package:flutter_utils_juni1289/permission/helper/permission_helper_util.dart';
 import 'package:flutter_utils_juni1289/permission/model/permission_handler_helper_model.dart';
+import 'package:location/location.dart';
 
 class LocationHelperUtil {
   /// private constructor

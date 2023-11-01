@@ -1,8 +1,8 @@
 import 'package:dartx/dartx.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:string_validator/string_validator.dart';
 import 'package:flutter_utils_juni1289/apputil/app_util_helper.dart';
 import 'package:flutter_utils_juni1289/exceptions/base64_format_exception.dart';
+import 'package:string_validator/string_validator.dart';
 
 class ValidatorsHelperUtil {
   /// private constructor

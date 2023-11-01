@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_utils_juni1289/apputil/app_util_helper.dart';
 import 'package:flutter_utils_juni1289/apputil/enums_util_helper.dart';
 import 'package:flutter_utils_juni1289/permission/model/permission_handler_helper_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PermissionHelperUtil {
   /// private constructor

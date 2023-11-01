@@ -1,6 +1,6 @@
-import 'package:google_api_availability/google_api_availability.dart';
 import 'package:flutter_utils_juni1289/apputil/app_util_helper.dart';
 import 'package:flutter_utils_juni1289/exceptions/flutter_utils_platform_exception.dart';
+import 'package:google_api_availability/google_api_availability.dart';
 
 class GooglePlayAvailabilityHelperUtil {
   /// private constructor

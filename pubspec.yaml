@@ -43,6 +43,7 @@ dependencies:
   filesize:
   pub_updater:
   google_maps_utils:
+  dio: 5.3.3
 
 dev_dependencies:
   flutter_test:

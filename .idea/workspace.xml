@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df90d943-63d5-4ac7-8e29-2f413bb2e4e9" name="Changes" comment="comment updated" />
+    <list default="true" id="df90d943-63d5-4ac7-8e29-2f413bb2e4e9" name="Changes" comment="initial commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,7 +52,7 @@
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
     "last_opened_file_path": "/Users/junaidhassan/Documents/AndroidstudioWorkSpace/SideKicks/flutter-utils-juni1289",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "settings.editor.selected.configurable": "dart.settings",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
@@ -78,20 +80,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1697889716857</updated>
-    </task>
-    <task id="LOCAL-00026" summary="read me updated">
-      <created>1698045449760</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1698045449760</updated>
-    </task>
-    <task id="LOCAL-00027" summary="read me updated">
-      <created>1698045663991</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1698045663991</updated>
     </task>
     <task id="LOCAL-00028" summary="read me updated">
       <created>1698045708010</created>
@@ -422,7 +410,21 @@
       <option name="project" value="LOCAL" />
       <updated>1698734985117</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="initial commit">
+      <created>1698857664851</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1698857664851</updated>
+    </task>
+    <task id="LOCAL-00076" summary="initial commit">
+      <created>1698857934169</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1698857934169</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -432,7 +434,6 @@
     </layout>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="initial commit" />
     <MESSAGE value="location helper updated" />
     <MESSAGE value="location helper fixes" />
     <MESSAGE value="location helper updates" />
@@ -455,6 +456,7 @@
     <MESSAGE value="refraction done" />
     <MESSAGE value="comments updated" />
     <MESSAGE value="comment updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="comment updated" />
+    <MESSAGE value="initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
   </component>
 </project>

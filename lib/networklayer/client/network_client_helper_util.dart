@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_utils_juni1289/permission/typedefs.dart';
+import 'package:flutter_utils_juni1289/apputil/enums_util_helper.dart';
+import 'package:flutter_utils_juni1289/networklayer/typedefs/typedefs.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class NetworkClientHelperUtil {
@@ -17,25 +18,25 @@ class NetworkClientHelperUtil {
   ///2. SHA256 Hash Security Keys should match -> optional and is based on an boolean var
   Dio getClient(
       {required bool usePrettyDioLogger,
-      required List<String> allowedSHAFingerprints, //list of the allowed SHA256-Finger prints provided by the client
-      required int connectTimeout,
-      required int sendTimeout,
-      required int receiveTimeout,
-      required RequestCompletionCallback requestCompletionCallback,
+      List<String>? allowedSHAFingerprints, //list of the allowed SHA256-Finger prints provided by the client
+      required int connectTimeout, //default is 30 seconds
+      required int sendTimeout, //default is 30 seconds
+      required int receiveTimeout, //default is 30 seconds
+      required RequestCompletionCallback requestCompletionCallback, //request completion callback
       required String urlWithEndpoint, //the baseURL appended with the endpoint
       required Map<String, String> requestHeaders, //request headers to be send along the request
-      required String requestMethod, // method to be specified in the caller method of the api
+      required RequestMethodTypesEnums requestMethod, // method to be specified in the caller method of the api
       required String baseURL}) {
     var options = BaseOptions(
       baseUrl: baseURL,
       // baseURL without the endpoint
       responseType: ResponseType.json,
       //response type of the request, now only JSON
-      method: requestMethod,
+      method: requestMethod == RequestMethodTypesEnums.post ? "post" : "get",
       //request method that is POST or GET
-      sendTimeout: _getAPITimeoutDurationFromPreloginConfigs(givenAPITimeoutInSeconds: sendTimeout),
-      connectTimeout: _getAPITimeoutDurationFromPreloginConfigs(givenAPITimeoutInSeconds: connectTimeout),
-      receiveTimeout: _getAPITimeoutDurationFromPreloginConfigs(givenAPITimeoutInSeconds: receiveTimeout),
+      sendTimeout: _getAPITimeoutDuration(givenAPITimeoutInSeconds: sendTimeout),
+      connectTimeout: _getAPITimeoutDuration(givenAPITimeoutInSeconds: connectTimeout),
+      receiveTimeout: _getAPITimeoutDuration(givenAPITimeoutInSeconds: receiveTimeout),
       headers: requestHeaders,
       receiveDataWhenStatusError: true,
       followRedirects: false,
@@ -52,7 +53,7 @@ class NetworkClientHelperUtil {
     return dio;
   }
 
-  _getAPITimeoutDurationFromPreloginConfigs({required int givenAPITimeoutInSeconds}) {
+  _getAPITimeoutDuration({required int givenAPITimeoutInSeconds}) {
     //check if given timeout value is not null
     //convert it and return
 

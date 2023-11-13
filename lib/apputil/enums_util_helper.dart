@@ -177,3 +177,25 @@ enum MaskAutoCompletionTypeEnums { lazy, eager }
 enum DatesDifferenceEnums { inDays, inHours, inMinutes, inSeconds, inMilliseconds, inMicroseconds }
 
 enum DateTimeQueryEnums { isBefore, isAfter, isSame, isBetween }
+
+enum RequestCompletionStatusEnums {
+  success,
+  noContent,
+  badRequest,
+  forbidden,
+  unAuthorised,
+  notFound,
+  internalServerError,
+  connectTimeOut,
+  cancel,
+  receiveTimeOut,
+  sendTimeOut,
+  cacheError,
+  noInternetConnection,
+  defaultStatus
+}
+
+enum RequestMethodTypesEnums{
+  post,
+  get
+}

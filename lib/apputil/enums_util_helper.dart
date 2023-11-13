@@ -192,7 +192,8 @@ enum RequestCompletionStatusEnums {
   sendTimeOut,
   cacheError,
   noInternetConnection,
-  defaultStatus
+  unknownStatus,
+  requestResponseInValid
 }
 
 enum RequestMethodTypesEnums{

@@ -10,9 +10,9 @@ import 'package:flutter_utils_juni1289/networklayer/client/network_client_helper
 import 'package:flutter_utils_juni1289/networklayer/model/request_completion_helper_model.dart';
 import 'package:flutter_utils_juni1289/networklayer/typedefs/typedefs.dart';
 import 'package:flutter_utils_juni1289/networklayer/util/constants.dart';
-import 'package:flutter_utils_juni1289/networklayer/util/request_response_helper_util.dart';
+import 'package:flutter_utils_juni1289/networklayer/util/network_layer_utils.dart';
 
-class NetworkManagerHelperUtil implements RequestCompletionHelperUtil {
+class NetworkManagerHelperUtil implements NetworkLayerUtils{
   void requestDioAPI(
       {required RequestCompletionCallback requestCompletionCallback,
       required RequestMethodTypesEnums requestMethodType,
@@ -79,28 +79,21 @@ class NetworkManagerHelperUtil implements RequestCompletionHelperUtil {
     NetworkConnectionManagerHelperUtil.instance.isNetworkAvailable().then((bool isNetworkAvailable) async {
       if (isNetworkAvailable) {
         if (requestMethodType == RequestMethodTypesEnums.post) {
-          _processPostRequest(urlWithEndpoint,requestBody,dio,requestCompletionCallback);
-        } 
+          processPostRequest(urlWithEndpoint:urlWithEndpoint, requestBody:requestBody, dioInstance:dio, requestCompletionCallback:requestCompletionCallback);
+        }
       } else {
         //no network
-        NetworkManagerUtils.getInstance().callCompletion("6853452354234234",
-            responseBody: null,
-            isSuccess: false,
-            completion: requestCompletionCallback,
-            responseCompletionStatus: ResponseCompletionStatus.noInternetConnection,
-            actualResponseCode: 9999,
-            networkManagerFailureErrorLoggerHelperModel:
-                NetworkManagerFailureErrorLoggerHelperModel(urlWithEndpoint: urlWithEndpoint, encryptedJSON: encryptedJSON ?? {}, requestHeaders: requestHeaders ?? {}));
+        requestCompletionCallback(requestCompletionHelperModel: RequestCompletionHelperModel(isSuccess: false,responseCompletionStatus: RequestCompletionStatusEnums.noInternetConnection));
       }
     });
   }
 
   @override
-  RequestCompletionHelperModel getRequestCompletionHelperModel({required Response responseFromServer}) {
+  RequestCompletionHelperModel onRequestCompletionGetHelperModel({required Response responseFromServer}) {
     int statusCodeFromServer = responseFromServer.statusCode ?? 0;
     try {
       if (statusCodeFromServer == NetworkLayerConstants.success) {
-        if (_isValidResponseJson(responseFromServer)) {
+        if (isValidResponseJson(responseFromServer)) {
           //success
           return RequestCompletionHelperModel(
               requestResponse: AppHelperUtil.instance.getEncodedJSONString(toEncode: responseFromServer.data.toString()),
@@ -134,8 +127,8 @@ class NetworkManagerHelperUtil implements RequestCompletionHelperUtil {
       throw NetworkLayerException(cause: "NetworkExceptionError:::$exp");
     }
   }
-
-  bool _isValidResponseJson(Response responseFromServer) {
+@override
+  bool isValidResponseJson(Response responseFromServer) {
     if (responseFromServer != null && responseFromServer.data != null && responseFromServer.data.runtimeType == String && responseFromServer.data.toString().isNotEmpty) {
       ///decoding the string to json
       dynamic json = AppHelperUtil.instance.getDecodedJSON(responseBody: responseFromServer.data.toString());
@@ -149,22 +142,28 @@ class NetworkManagerHelperUtil implements RequestCompletionHelperUtil {
     }
   }
 
-  Future<void> _processPostRequest(String urlWithEndpoint, Map<String, dynamic>? requestBody, Dio dio, RequestCompletionCallback requestCompletionCallback) async{
-    ///method for calling POST type APIs
-    ///includes MAY or MAY NOT request body
+  ///method for calling POST type APIs
+  ///includes MAY or MAY NOT request body
+  @override
+  Future<void> processPostRequest({required String urlWithEndpoint, Map<String, dynamic>? requestBody,required Dio dioInstance,required RequestCompletionCallback
+  requestCompletionCallback}) async {
     try {
       var requestStopWatchTimer = Stopwatch();
       requestStopWatchTimer.start();
-      await dio.post(urlWithEndpoint, data: requestBody ?? {}).then((Response responseFromServer) {
+      await dioInstance.post(urlWithEndpoint, data: requestBody ?? {}).then((Response responseFromServer) {
         var elapsedTimeDuration = requestStopWatchTimer.elapsed.toString();
         requestStopWatchTimer.stop();
 
-        requestCompletionCallback(requestCompletionHelperModel: getRequestCompletionHelperModel(responseFromServer: responseFromServer));
+        requestCompletionCallback(requestCompletionHelperModel: onRequestCompletionGetHelperModel(responseFromServer: responseFromServer));
       }).catchError((dioError, stackTrace) {
-
+        requestCompletionCallback(
+            requestCompletionHelperModel: (NetworkLayerErrorException.handle(dioError).failure) ??
+                RequestCompletionHelperModel(isSuccess: false, responseCompletionStatus: RequestCompletionStatusEnums.unknownStatus));
       });
     } on DioException catch (dioException) {
-
+      requestCompletionCallback(
+          requestCompletionHelperModel: (NetworkLayerErrorException.handle(dioException).failure) ??
+              RequestCompletionHelperModel(isSuccess: false, responseCompletionStatus: RequestCompletionStatusEnums.unknownStatus));
     }
   }
 }

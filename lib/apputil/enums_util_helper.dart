@@ -190,10 +190,12 @@ enum RequestCompletionStatusEnums {
   cancel,
   receiveTimeOut,
   sendTimeOut,
-  cacheError,
   noInternetConnection,
   unknownStatus,
-  requestResponseInValid
+  connectionError,
+  requestResponseInValid,
+  badCertificate,
+  badResponse
 }
 
 enum RequestMethodTypesEnums{

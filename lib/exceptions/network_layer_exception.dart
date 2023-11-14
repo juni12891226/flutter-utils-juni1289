@@ -9,7 +9,7 @@ class NetworkLayerException implements Exception {
   NetworkLayerException({required this.cause});
 }
 
-class NetworkLayerErrorException implements Exception{
+class NetworkLayerErrorException implements Exception {
   RequestCompletionHelperModel? failure;
 
   NetworkLayerErrorException.handle(dynamic error) {
@@ -22,27 +22,24 @@ class NetworkLayerErrorException implements Exception{
     }
   }
 
-  RequestCompletionHelperModel _handleError(DioException error) {
+  RequestCompletionHelperModel? _handleError(DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
-        return RequestCompletionStatusEnums.CONNECT_TIMEOUT.getFailure();
+        return RequestCompletionStatusEnums.connectTimeOut.getRequestCompletionHelperModel();
       case DioExceptionType.sendTimeout:
-        return RequestCompletionStatusEnums.SEND_TIMEOUT.getFailure();
+        return RequestCompletionStatusEnums.sendTimeOut.getRequestCompletionHelperModel();
       case DioExceptionType.receiveTimeout:
-        return RequestCompletionStatusEnums.RECIEVE_TIMEOUT.getFailure();
-      case DioExceptionType.badResponse:
-        if (error.response != null &&
-            error.response?.statusCode != null &&
-            error.response?.statusMessage != null) {
-          return RequestCompletionHelperModel(error.response?.statusCode ?? 0,
-              error.response?.statusMessage ?? "");
-        } else {
-          return RequestCompletionStatusEnums.DEFAULT.getFailure();
-        }
+        return RequestCompletionStatusEnums.receiveTimeOut.getRequestCompletionHelperModel();
       case DioExceptionType.cancel:
-        return RequestCompletionStatusEnums.CANCEL.getFailure();
+        return RequestCompletionStatusEnums.cancel.getRequestCompletionHelperModel();
+      case DioExceptionType.badCertificate:
+        return RequestCompletionStatusEnums.badCertificate.getRequestCompletionHelperModel();
+      case DioExceptionType.badResponse:
+        return RequestCompletionStatusEnums.badResponse.getRequestCompletionHelperModel();
+      case DioExceptionType.connectionError:
+        return RequestCompletionStatusEnums.connectionError.getRequestCompletionHelperModel();
       default:
-        return RequestCompletionStatusEnums.DEFAULT.getFailure();
+        return RequestCompletionStatusEnums.unknownStatus.getRequestCompletionHelperModel();
     }
   }
 }

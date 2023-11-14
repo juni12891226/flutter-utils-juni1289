@@ -25,7 +25,8 @@ class NetworkManagerHelperUtil implements NetworkLayerUtils{
       Map<String, dynamic>? requestBody,
       bool isHideKeyboardOnAPICall = true,
       List<String>? sslSHAKeys,
-      bool usePrettyDioLogger = true}) async {
+      bool usePrettyDioLogger = true,
+        List<Interceptor>? dioInterceptors}) async {
     if (isHideKeyboardOnAPICall) {
       ///hide keyboard
       AppHelperUtil.instance.hideKeyboard();

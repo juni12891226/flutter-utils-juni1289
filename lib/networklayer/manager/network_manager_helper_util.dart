@@ -10,23 +10,35 @@ import 'package:flutter_utils_juni1289/networklayer/client/network_client_helper
 import 'package:flutter_utils_juni1289/networklayer/model/request_completion_helper_model.dart';
 import 'package:flutter_utils_juni1289/networklayer/typedefs/typedefs.dart';
 import 'package:flutter_utils_juni1289/networklayer/util/constants.dart';
-import 'package:flutter_utils_juni1289/networklayer/util/network_layer_utils.dart';
+import 'package:flutter_utils_juni1289/networklayer/validator/request_validator_helper_util.dart';
 
-class NetworkManagerHelperUtil implements NetworkLayerUtils{
-  void requestDioAPI(
+class NetworkManagerHelperUtil implements RequestValidatorHelperUtil {
+  ///Main caller method for requesting Dio APIs
+  ///[requestCompletionCallback] is required
+  ///[requestMethodType] is required, ENUMs -> for specifying the API method type
+  ///[baseURL] is required, the Base URL pointing to the server
+  ///[apiEndPoint] is required, the path of the API endpoint
+  ///[requestHeaders] is optional
+  ///[requestBody] is optional
+  ///[connectTimeoutSecs] is optional, default is 30 Seconds
+  ///[sendTimeoutSecs] is optional, default is 30 Seconds
+  ///[receiveTimeoutSecs] is optional, default is 30 Seconds
+  ///[dioInterceptors] is optional, is a list of Interceptors you want to add any of your own Interceptor
+  ///[showRawLogs] is optional, default is set to false, to show the Dio Network Layer logs
+  ///[isHideKeyboardOnAPICall] is optional, default is true, to hide the keyboard on each API call
+  Future<void> requestDioAPI(
       {required RequestCompletionCallback requestCompletionCallback,
       required RequestMethodTypesEnums requestMethodType,
-      required String urlWithEndpoint,
       required String baseURL,
-      Map<String, String>? requestHeaders,
-      int connectTimeout = 30,
-      int sendTimeout = 30,
-      int receiveTimeOut = 30,
+      required String apiEndPoint,
+      Map<String, dynamic>? requestHeaders,
       Map<String, dynamic>? requestBody,
+      int connectTimeoutSecs = 30,
+      int sendTimeoutSecs = 30,
+      int receiveTimeoutSecs = 30,
       bool isHideKeyboardOnAPICall = true,
-      List<String>? sslSHAKeys,
-      bool usePrettyDioLogger = true,
-        List<Interceptor>? dioInterceptors}) async {
+      List<Interceptor>? dioInterceptors,
+      bool showRawLogs = false}) async {
     if (isHideKeyboardOnAPICall) {
       ///hide keyboard
       AppHelperUtil.instance.hideKeyboard();
@@ -42,14 +54,12 @@ class NetworkManagerHelperUtil implements NetworkLayerUtils{
     ///that is if the SHA256 Finger prints will match only
     ///then the API gets onto next level
     Dio dio = NetworkClientHelperUtil.instance.getClient(
-        usePrettyDioLogger: usePrettyDioLogger,
         baseURL: baseURL,
-        connectTimeout: connectTimeout,
-        receiveTimeout: receiveTimeOut,
-        sendTimeout: sendTimeout,
-        allowedSHAFingerprints: sslSHAKeys,
+        connectTimeoutSecs: connectTimeoutSecs,
+        receiveTimeoutSecs: receiveTimeoutSecs,
+        sendTimeoutSecs: sendTimeoutSecs,
         requestCompletionCallback: requestCompletionCallback,
-        urlWithEndpoint: urlWithEndpoint,
+        apiEndPoint: apiEndPoint,
         requestHeaders: requestHeaders ?? {},
         requestMethod: requestMethodType);
 
@@ -76,63 +86,71 @@ class NetworkManagerHelperUtil implements NetworkLayerUtils{
       // },
     );
 
-    ///check network here
+    //check network here
     NetworkConnectionManagerHelperUtil.instance.isNetworkAvailable().then((bool isNetworkAvailable) async {
       if (isNetworkAvailable) {
         if (requestMethodType == RequestMethodTypesEnums.post) {
-          processPostRequest(urlWithEndpoint:urlWithEndpoint, requestBody:requestBody, dioInstance:dio, requestCompletionCallback:requestCompletionCallback);
+          processPostRequest(
+              showRawLogs: showRawLogs,
+              baseURL: baseURL,
+              apiEndPoint: apiEndPoint,
+              requestBody: requestBody,
+              dioInstance: dio,
+              requestCompletionCallback: requestCompletionCallback);
         }
       } else {
         //no network
-        requestCompletionCallback(requestCompletionHelperModel: RequestCompletionHelperModel(isSuccess: false,responseCompletionStatus: RequestCompletionStatusEnums.noInternetConnection));
+        requestCompletionCallback(RequestCompletionHelperModel(
+            reason:"No Internet Connection Available!",
+            isSuccess: false, responseCompletionStatus: RequestCompletionStatusEnums.noInternetConnection));
       }
     });
   }
 
+  ///When the server responds, that is when the request completes (success | failure)
+  ///Checks the status code from the server response
+  ///Checks the server response if valid or not that is if valid JSON and is mappable
+  ///[responseFromServer] is required
   @override
   RequestCompletionHelperModel onRequestCompletionGetHelperModel({required Response responseFromServer}) {
     int statusCodeFromServer = responseFromServer.statusCode ?? 0;
-    try {
-      if (statusCodeFromServer == NetworkLayerConstants.success) {
-        if (isValidResponseJson(responseFromServer)) {
-          //success
-          return RequestCompletionHelperModel(
-              requestResponse: AppHelperUtil.instance.getEncodedJSONString(toEncode: responseFromServer.data.toString()),
-              reason: "Success (200).",
-              responseCompletionStatus: RequestCompletionStatusEnums.success,
-              isSuccess: true);
-        } else {
-          //request response in invalid, null or empty or json has errors
-          return RequestCompletionHelperModel(
-              reason: "Request response is not valid.", responseCompletionStatus: RequestCompletionStatusEnums.requestResponseInValid, isSuccess: false);
-        }
-      } else if (statusCodeFromServer == NetworkLayerConstants.badRequest) {
-        return RequestCompletionHelperModel(reason: "Bad Request (400).", responseCompletionStatus: RequestCompletionStatusEnums.badRequest, isSuccess: false);
-      } else if (statusCodeFromServer == NetworkLayerConstants.noContent) {
-        return RequestCompletionHelperModel(reason: "No content (201).", responseCompletionStatus: RequestCompletionStatusEnums.noContent, isSuccess: false);
-      } else if (statusCodeFromServer == NetworkLayerConstants.unAuthorised) {
-        return RequestCompletionHelperModel(reason: "UnAuthorised (401).", responseCompletionStatus: RequestCompletionStatusEnums.unAuthorised, isSuccess: false);
-      } else if (statusCodeFromServer == NetworkLayerConstants.forbidden) {
-        return RequestCompletionHelperModel(reason: "Forbidden (403).", responseCompletionStatus: RequestCompletionStatusEnums.forbidden, isSuccess: false);
-      } else if (statusCodeFromServer == NetworkLayerConstants.internalServerError) {
+    if (statusCodeFromServer == NetworkLayerConstants.success) {
+      if (isValidResponseJson(responseFromServer)) {
+        //success
         return RequestCompletionHelperModel(
-            reason: "Internal Server Error (500).", responseCompletionStatus: RequestCompletionStatusEnums.internalServerError, isSuccess: false);
-      } else if (statusCodeFromServer == NetworkLayerConstants.notFound) {
-        return RequestCompletionHelperModel(reason: "Not found (404).", responseCompletionStatus: RequestCompletionStatusEnums.notFound, isSuccess: false);
+            requestResponse: responseFromServer.data.toString(), reason: "Success (200).", responseCompletionStatus: RequestCompletionStatusEnums.success, isSuccess: true);
       } else {
-        //unknown result code
+        //request response in invalid, null or empty or json has errors
         return RequestCompletionHelperModel(
-            reason: "Unknown status code from server.", responseCompletionStatus: RequestCompletionStatusEnums.unknownStatus, isSuccess: false);
+            reason: "Request response is not valid.", responseCompletionStatus: RequestCompletionStatusEnums.requestResponseInValid, isSuccess: false);
       }
-    } catch (exp) {
-      throw NetworkLayerException(cause: "NetworkExceptionError:::$exp");
+    } else if (statusCodeFromServer == NetworkLayerConstants.badRequest) {
+      return RequestCompletionHelperModel(reason: "Bad Request (400).", responseCompletionStatus: RequestCompletionStatusEnums.badRequest, isSuccess: false);
+    } else if (statusCodeFromServer == NetworkLayerConstants.noContent) {
+      return RequestCompletionHelperModel(reason: "No content (201).", responseCompletionStatus: RequestCompletionStatusEnums.noContent, isSuccess: false);
+    } else if (statusCodeFromServer == NetworkLayerConstants.unAuthorised) {
+      return RequestCompletionHelperModel(reason: "UnAuthorised (401).", responseCompletionStatus: RequestCompletionStatusEnums.unAuthorised, isSuccess: false);
+    } else if (statusCodeFromServer == NetworkLayerConstants.forbidden) {
+      return RequestCompletionHelperModel(reason: "Forbidden (403).", responseCompletionStatus: RequestCompletionStatusEnums.forbidden, isSuccess: false);
+    } else if (statusCodeFromServer == NetworkLayerConstants.internalServerError) {
+      return RequestCompletionHelperModel(
+          reason: "Internal Server Error (500).", responseCompletionStatus: RequestCompletionStatusEnums.internalServerError, isSuccess: false);
+    } else if (statusCodeFromServer == NetworkLayerConstants.notFound) {
+      return RequestCompletionHelperModel(reason: "Not found (404).", responseCompletionStatus: RequestCompletionStatusEnums.notFound, isSuccess: false);
+    } else {
+      //unknown result code
+      return RequestCompletionHelperModel(reason: "Unknown status code from server.", responseCompletionStatus: RequestCompletionStatusEnums.unknownStatus, isSuccess: false);
     }
   }
-@override
+
+  ///Validate the response from the server
+  ///If the response returned from server is a valid JSON and is mappable
+  ///[responseFromServer] is required param, the Dio Response
+  @override
   bool isValidResponseJson(Response responseFromServer) {
-    if (responseFromServer != null && responseFromServer.data != null && responseFromServer.data.runtimeType == String && responseFromServer.data.toString().isNotEmpty) {
-      ///decoding the string to json
-      dynamic json = AppHelperUtil.instance.getDecodedJSON(responseBody: responseFromServer.data.toString());
+    if (responseFromServer.data != null) {
+      //decoding the string to json
+      dynamic json = AppHelperUtil.instance.getDecodedJSON(responseBody: AppHelperUtil.instance.getEncodedJSONString(toEncode: responseFromServer.data));
       if (json != null && json is Map) {
         return true;
       } else {
@@ -144,27 +162,39 @@ class NetworkManagerHelperUtil implements NetworkLayerUtils{
   }
 
   ///method for calling POST type APIs
-  ///includes MAY or MAY NOT request body
+  ///MAY or MAY NOT include the request body
+  ///[baseURL] is required, only using in Raw logs
+  ///[apiEndPoint] is required
+  ///[dioInstance] is required
+  ///[requestCompletionCallback] is required for the API complete callback
+  ///[showRawLogs] is optional, to show the Dio network layer logs
+  ///[requestBody] is optional for POST request
   @override
-  Future<void> processPostRequest({required String urlWithEndpoint, Map<String, dynamic>? requestBody,required Dio dioInstance,required RequestCompletionCallback
-  requestCompletionCallback}) async {
+  Future<void> processPostRequest(
+      {required String baseURL,
+      required String apiEndPoint,
+      required Dio dioInstance,
+      required RequestCompletionCallback requestCompletionCallback,
+      Map<String, dynamic>? requestBody,
+      bool showRawLogs = false}) async {
     try {
       var requestStopWatchTimer = Stopwatch();
       requestStopWatchTimer.start();
-      await dioInstance.post(urlWithEndpoint, data: requestBody ?? {}).then((Response responseFromServer) {
+      await dioInstance.post(apiEndPoint, data: requestBody ?? {}).then((Response responseFromServer) {
         var elapsedTimeDuration = requestStopWatchTimer.elapsed.toString();
         requestStopWatchTimer.stop();
 
-        requestCompletionCallback(requestCompletionHelperModel: onRequestCompletionGetHelperModel(responseFromServer: responseFromServer));
-      }).catchError((dioError, stackTrace) {
-        requestCompletionCallback(
-            requestCompletionHelperModel: (NetworkLayerErrorException.handle(dioError).failure) ??
-                RequestCompletionHelperModel(isSuccess: false, responseCompletionStatus: RequestCompletionStatusEnums.unknownStatus));
+        //process the response validation
+        requestCompletionCallback(onRequestCompletionGetHelperModel(responseFromServer: responseFromServer));
+        //show the time taken by the API call
+        AppHelperUtil.instance.showLog("URL:::$baseURL$apiEndPoint elapsedTimeDuration:::$elapsedTimeDuration", logKey: "DioX", isReleaseMode: showRawLogs ? false : true);
+        AppHelperUtil.instance
+            .showLog("URL:::$baseURL$apiEndPoint RawResponseFromServer:::${responseFromServer.data}", logKey: "DioX", isReleaseMode: showRawLogs ? false : true);
       });
     } on DioException catch (dioException) {
-      requestCompletionCallback(
-          requestCompletionHelperModel: (NetworkLayerErrorException.handle(dioException).failure) ??
-              RequestCompletionHelperModel(isSuccess: false, responseCompletionStatus: RequestCompletionStatusEnums.unknownStatus));
+      AppHelperUtil.instance.showLog("URL:::$baseURL$apiEndPoint RawExceptionFromDio:::${dioException.error}", logKey: "DioX", isReleaseMode: showRawLogs ? false : true);
+      requestCompletionCallback((NetworkLayerErrorException.handle(dioException).failure) ??
+          RequestCompletionHelperModel(reason: "DioException has been thrown!", isSuccess: false, responseCompletionStatus: RequestCompletionStatusEnums.unknownStatus));
     }
   }
 }

@@ -8,6 +8,8 @@ import 'package:flutter_utils_juni1289/exceptions/network_layer_exception.dart';
 import 'package:flutter_utils_juni1289/network/connectionmanager/network_connection_manager_helper_util.dart';
 import 'package:flutter_utils_juni1289/networklayer/client/network_client_helper_util.dart';
 import 'package:flutter_utils_juni1289/networklayer/model/request_completion_helper_model.dart';
+import 'package:flutter_utils_juni1289/networklayer/responsewrapper/generics_util.dart';
+import 'package:flutter_utils_juni1289/networklayer/responsewrapper/response_wrapper.dart';
 import 'package:flutter_utils_juni1289/networklayer/typedefs/typedefs.dart';
 import 'package:flutter_utils_juni1289/networklayer/util/constants.dart';
 import 'package:flutter_utils_juni1289/networklayer/validator/request_validator_helper_util.dart';
@@ -26,7 +28,14 @@ class NetworkManagerHelperUtil implements RequestValidatorHelperUtil {
   ///[dioInterceptors] is optional, is a list of Interceptors you want to add any of your own Interceptor
   ///[showRawLogs] is optional, default is set to false, to show the Dio Network Layer logs
   ///[isHideKeyboardOnAPICall] is optional, default is true, to hide the keyboard on each API call
-  Future<void> requestDioAPI(
+  ///[createModelClassCallback] is optional and can be used to get the response parsed model though the JSON
+  ///Usage for [createModelClassCallback] is that you have to pass it as:
+  ///createModelClassCallback: () => APIObjectTypeResponse<MyModel>(create: () => MyModel()),
+  ///then you can consume it as:
+  ///APIObjectTypeResponse<MyModel> myModel=requestCompletionHelperModel.responseWrapper.response;
+  ///then you can access its param properties as:
+  ///myModel.myProperty
+  Future<void> requestDioAPI<T extends Decodable>(
       {required RequestCompletionCallback requestCompletionCallback,
       required RequestMethodTypesEnums requestMethodType,
       required String baseURL,
@@ -38,7 +47,8 @@ class NetworkManagerHelperUtil implements RequestValidatorHelperUtil {
       int receiveTimeoutSecs = 30,
       bool isHideKeyboardOnAPICall = true,
       List<Interceptor>? dioInterceptors,
-      bool showRawLogs = false}) async {
+      bool showRawLogs = false,
+      CreateModelClassCallback<T>? createModelClassCallback}) async {
     if (isHideKeyboardOnAPICall) {
       ///hide keyboard
       AppHelperUtil.instance.hideKeyboard();
@@ -96,13 +106,13 @@ class NetworkManagerHelperUtil implements RequestValidatorHelperUtil {
               apiEndPoint: apiEndPoint,
               requestBody: requestBody,
               dioInstance: dio,
-              requestCompletionCallback: requestCompletionCallback);
+              requestCompletionCallback: requestCompletionCallback,
+              createModelClassCallback: createModelClassCallback);
         }
       } else {
         //no network
         requestCompletionCallback(RequestCompletionHelperModel(
-            reason:"No Internet Connection Available!",
-            isSuccess: false, responseCompletionStatus: RequestCompletionStatusEnums.noInternetConnection));
+            reason: "No Internet Connection Available!", isSuccess: false, responseCompletionStatus: RequestCompletionStatusEnums.noInternetConnection));
       }
     });
   }
@@ -111,14 +121,30 @@ class NetworkManagerHelperUtil implements RequestValidatorHelperUtil {
   ///Checks the status code from the server response
   ///Checks the server response if valid or not that is if valid JSON and is mappable
   ///[responseFromServer] is required
+  ///[createModelClassCallback] is optional, if provided will return as:
+  ///APIObjectTypeResponse<T> or
+  ///APIListTypeResponse<T>
+  ///Where T is your supplied type for your model
   @override
-  RequestCompletionHelperModel onRequestCompletionGetHelperModel({required Response responseFromServer}) {
+  RequestCompletionHelperModel onRequestCompletionGetHelperModel<T extends Decodable>(
+      {required Response responseFromServer, CreateModelClassCallback<T>? createModelClassCallback}) {
     int statusCodeFromServer = responseFromServer.statusCode ?? 0;
     if (statusCodeFromServer == NetworkLayerConstants.success) {
       if (isValidResponseJson(responseFromServer)) {
         //success
+
+        ResponseWrapper<T>? responseWrapper;
+        if (createModelClassCallback != null) {
+          responseWrapper = ResponseWrapper.init(
+              create: createModelClassCallback,
+              json: AppHelperUtil.instance.getDecodedJSON(responseBody: AppHelperUtil.instance.getEncodedJSONString(toEncode: responseFromServer.data)));
+        }
         return RequestCompletionHelperModel(
-            requestResponse: responseFromServer.data.toString(), reason: "Success (200).", responseCompletionStatus: RequestCompletionStatusEnums.success, isSuccess: true);
+            responseWrapper: responseWrapper,
+            requestResponse: responseFromServer.data.toString(),
+            reason: "Success (200).",
+            responseCompletionStatus: RequestCompletionStatusEnums.success,
+            isSuccess: true);
       } else {
         //request response in invalid, null or empty or json has errors
         return RequestCompletionHelperModel(
@@ -169,14 +195,19 @@ class NetworkManagerHelperUtil implements RequestValidatorHelperUtil {
   ///[requestCompletionCallback] is required for the API complete callback
   ///[showRawLogs] is optional, to show the Dio network layer logs
   ///[requestBody] is optional for POST request
+  ///[createModelClassCallback] is optional, if provided will return as:
+  ///APIObjectTypeResponse<T> or
+  ///APIListTypeResponse<T>
+  ///Where T is your supplied type for your model
   @override
-  Future<void> processPostRequest(
+  Future<void> processPostRequest<T extends Decodable>(
       {required String baseURL,
       required String apiEndPoint,
       required Dio dioInstance,
       required RequestCompletionCallback requestCompletionCallback,
       Map<String, dynamic>? requestBody,
-      bool showRawLogs = false}) async {
+      bool showRawLogs = false,
+      CreateModelClassCallback<T>? createModelClassCallback}) async {
     try {
       var requestStopWatchTimer = Stopwatch();
       requestStopWatchTimer.start();
@@ -185,7 +216,7 @@ class NetworkManagerHelperUtil implements RequestValidatorHelperUtil {
         requestStopWatchTimer.stop();
 
         //process the response validation
-        requestCompletionCallback(onRequestCompletionGetHelperModel(responseFromServer: responseFromServer));
+        requestCompletionCallback(onRequestCompletionGetHelperModel(responseFromServer: responseFromServer, createModelClassCallback: createModelClassCallback));
         //show the time taken by the API call
         AppHelperUtil.instance.showLog("URL:::$baseURL$apiEndPoint elapsedTimeDuration:::$elapsedTimeDuration", logKey: "DioX", isReleaseMode: showRawLogs ? false : true);
         AppHelperUtil.instance

@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df90d943-63d5-4ac7-8e29-2f413bb2e4e9" name="Changes" comment="dio client utils added">
+    <list default="true" id="df90d943-63d5-4ac7-8e29-2f413bb2e4e9" name="Changes" comment="network layer updated">
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/apputil/enums_util_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/apputil/enums_util_helper.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/networklayer/client/network_client_helper_util.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networklayer/client/network_client_helper_util.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/networklayer/manager/network_manager_helper_util.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networklayer/manager/network_manager_helper_util.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/networklayer/model/request_completion_helper_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networklayer/model/request_completion_helper_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/networklayer/typedefs/typedefs.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networklayer/typedefs/typedefs.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/networklayer/validator/request_validator_extension.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/networklayer/validator/request_validator_extension.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,13 +88,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1697889716857</updated>
-    </task>
-    <task id="LOCAL-00032" summary="life cycle updated">
-      <created>1698061259709</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1698061259709</updated>
     </task>
     <task id="LOCAL-00033" summary="life cycle updated">
       <created>1698061680800</created>
@@ -426,7 +425,14 @@
       <option name="project" value="LOCAL" />
       <updated>1699946519421</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="network layer updated">
+      <created>1700042363141</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1700042363141</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -436,7 +442,6 @@
     </layout>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="location helper fixes" />
     <MESSAGE value="location helper updates" />
     <MESSAGE value="apputils added" />
     <MESSAGE value="contacts util added" />
@@ -461,6 +466,7 @@
     <MESSAGE value="dio added" />
     <MESSAGE value="dio client getter added" />
     <MESSAGE value="dio client utils added" />
-    <option name="LAST_COMMIT_MESSAGE" value="dio client utils added" />
+    <MESSAGE value="network layer updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="network layer updated" />
   </component>
 </project>

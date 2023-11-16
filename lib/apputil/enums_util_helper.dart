@@ -198,7 +198,4 @@ enum RequestCompletionStatusEnums {
   badResponse
 }
 
-enum RequestMethodTypesEnums{
-  post,
-  get
-}
+enum RequestMethodTypesEnums { post, get }

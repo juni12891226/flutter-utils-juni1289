@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_utils_juni1289/apputil/enums_util_helper.dart';
 import 'package:flutter_utils_juni1289/networklayer/typedefs/typedefs.dart';
 
-
 class NetworkClientHelperUtil {
   /// private constructor
   NetworkClientHelperUtil._();

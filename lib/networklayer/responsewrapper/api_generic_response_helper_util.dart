@@ -11,7 +11,7 @@ class APIObjectTypeResponse<T> extends GenericObject<T> implements Decodable<API
 
   @override
   APIObjectTypeResponse<T> decode(dynamic json) {
-    responseCode = json['code'] ?? '';
+    responseCode = (json['code'] ?? '-1').toString();
     responseMessage = json['message'] ?? '';
     status = json['status'] ?? '';
 

@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df90d943-63d5-4ac7-8e29-2f413bb2e4e9" name="Changes" comment="network layer updated">
-      <change afterPath="$PROJECT_DIR$/.idea/flutter-utils-juni1289.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/widgets/lists/menu/list_child_item_widget.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/widgets/lists/menu/simple_menu_list_widget.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/widgets/lists/models/simple_menu_list_widget_helper_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/image/app_image_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/image/app_image_widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/image/png_cached_network_image_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/image/png_cached_network_image_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/image/svg_cached_network_image_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/image/svg_cached_network_image_view.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,9 +34,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2X4YFhOHlRdF8VRZ5V0MY5gV2hU" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -68,7 +60,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "last_opened_file_path": "/Users/junaidhassan/Documents/AndroidstudioWorkSpace/SideKicks/flutter-utils-juni1289/lib/widgets/lists/models",
+    "last_opened_file_path": "/Users/junaidhassan/Downloads/x/flutter-utils-juni1289",
     "settings.editor.selected.configurable": "dart.settings",
     "show.migrate.to.gradle.popup": "false"
   }

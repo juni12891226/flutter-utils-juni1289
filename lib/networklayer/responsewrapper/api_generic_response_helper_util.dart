@@ -38,9 +38,12 @@ class APIListTypeResponse<T> extends GenericObject<T> implements Decodable<APILi
     responseMessage = json['responseMessage'] ?? "";
     status = json['status'] ?? '';
     data = [];
-    json['data'].forEach((item) {
-      data!.add(genericObject(item));
-    });
+    if ((json as Map<String, dynamic>).containsKey('data') && json["data"] != null) {
+      json['data'].forEach((item) {
+        data!.add(genericObject(item));
+      });
+    }
+
     return this;
   }
 }

@@ -30,8 +30,8 @@ dependencies:
   mask_text_input_formatter:
   provider:
   flutter_svg:
-  cached_network_image:
-  flutter_advanced_networkimage_2:
+#  cached_network_image:
+#  flutter_advanced_networkimage_2:
   marquee_widget:
   lottie:
   firebase_analytics:
